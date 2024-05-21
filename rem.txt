@@ -1,0 +1,11 @@
+$rem
+jobtype opt
+basis           6-311G**
+METHOD  B3PW91
+geom_opt_max_cycles 999
+dft_d empirical_grimme
+$end
+
+$empirical_dispersion
+s6 1.00
+$end
