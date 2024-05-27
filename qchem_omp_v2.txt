@@ -1,0 +1,36 @@
+#!/bin/sh
+#PBS -N test
+#PBS -j oe
+#PBS -o test.log
+#PBS -e test.err
+#PBS -l pmem=DATA_MEMORY
+#PBS -l walltime=DATA_WALLTIME
+#PBS -l nodes=1:ppn=DATA_CORE
+#PBS -q DATA_QUEUE
+
+# get number of processors from PBS_NODEFILE
+NPROC=`cat $PBS_NODEFILE | wc -l`
+TS1=`echo "$PBS_JOBID" | tr -d '[]'`
+
+#===================
+export QC=/usr/local/qchem_omp
+export QCAUX=/usr/local/qchem/qcaux
+export QCSCRATCH=/work/$TS1
+export QCRSH=ssh
+export QCMPI=openmp
+export QCPLATFORM=LINUX_Ix86_64
+export QC_EXT_LIBS=/usr/local/qchem/libs
+
+#OpenMP Run
+export OMP_NUM_THREADS=DATA_CORE
+
+cd $PBS_O_WORKDIR
+
+$QC/bin/qchem -nt $NPROC test.inp test.out
+
+rm -rf $QCSCRATCH
+
+#MPI Run
+#mpirun -hostfile $PBS_NODEFILE -np 8 $QC/exe/qcprog.exe 13-uddd.inp $QCSCRATCH >> $HOME/qchem_test/13.out
+#$QC/exe/qcprog.exe 13-uddd2.inp $QCSCRATCH >> $HOME/qchem_test/132.out
+# where N is number of compute node which listed in $PBS_NODEFILE
