@@ -1,4 +1,4 @@
-# PBS
+# PBS version 0.0
 
-
-test
+example command
+./q_gen.sh | ./run.sh
